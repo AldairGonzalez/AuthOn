@@ -1,5 +1,6 @@
 ﻿using AuthOn.Domain.Entities.Users;
 using AuthOn.Domain.ValueObjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuthOn.Infrastructure.Persistence.Repositories
 {
@@ -22,14 +23,14 @@ namespace AuthOn.Infrastructure.Persistence.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<User?> GetByEmailAsync(EmailAddress email)
+        public async Task<User?> GetByEmailAsync(EmailAddress email)
         {
-            throw new NotImplementedException();
+            return await _context.Users.FirstOrDefaultAsync(x => x.Email.Equals(email));
         }
 
-        public Task<User?> GetByIdAsync(UserId id)
+        public async Task<User?> GetByIdAsync(UserId id)
         {
-            throw new NotImplementedException();
+            return await _context.Users.FindAsync(id);
         }
 
         public Task UpdateAsync(User user)
