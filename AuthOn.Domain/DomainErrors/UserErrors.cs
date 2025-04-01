@@ -6,6 +6,9 @@ namespace AuthOn.Domain.DomainErrors
     {
         public static class User
         {
+            public static Error EmailAlreadyExists =>
+                Error.Validation("User.Email", "Email already exists.");
+
             public static Error EmailWithBadFormat =>
                 Error.Validation("User.Email", "Email has not valid format.");
 

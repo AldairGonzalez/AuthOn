@@ -38,6 +38,11 @@ namespace AuthOn.Application.Users.Commands.Create
                 return UserErrors.User.PasswordWithBadFormat;
             }
 
+            if(_userRepository.GetByEmailAsync(email) is not null)
+            {
+                return UserErrors.User.EmailAlreadyExists;
+            }
+
             var user = User.Create(userName, email, _passwordHasher.Hash(password.Value));
 
             await _userRepository.AddAsync(user);
