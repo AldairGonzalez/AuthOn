@@ -38,7 +38,7 @@ namespace AuthOn.Application.Users.Commands.Create
                 return UserErrors.User.PasswordWithBadFormat;
             }
 
-            if(_userRepository.GetByEmailAsync(email) is not null)
+            if (await _userRepository.GetByEmailAsync(email) is not null)
             {
                 return UserErrors.User.EmailAlreadyExists;
             }
