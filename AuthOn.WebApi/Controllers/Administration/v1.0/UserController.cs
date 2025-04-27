@@ -1,4 +1,4 @@
-﻿using AuthOn.Application.Entities.Users.Commands.Create;
+﻿using AuthOn.Application.Users.Commands.Create;
 using AuthOn.Application.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

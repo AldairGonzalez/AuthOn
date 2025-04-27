@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace AuthOn.Application.Entities.Users.Commands.Create
+namespace AuthOn.Application.Users.Commands.Create
 {
     public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
     {
