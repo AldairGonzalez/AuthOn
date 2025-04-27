@@ -1,0 +1,6 @@
+@AuthOn.WebApi_HostAddress = http://localhost:5113
+
+GET {{AuthOn.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

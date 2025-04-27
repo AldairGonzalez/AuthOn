@@ -1,0 +1,29 @@
+﻿{
+  "ConnectionStrings": {
+    "SQLConnection": ""
+  },
+  "ApiInformation": {
+    "Url": "",
+    "EndPoints": {
+      "ActivateAccount": "/api/User/ActivateAccount?token="
+    }
+  },
+  "GmailSettings": {
+    "UserEmail": "",
+    "Password": "",
+    "Port": 587
+  },
+  "TokenSettings": {
+    "ActivationToken": {
+      "Key": "",
+      "ExpiresInHours": "48"
+    }
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}
