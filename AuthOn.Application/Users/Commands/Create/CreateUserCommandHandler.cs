@@ -9,7 +9,7 @@ using AuthOn.Shared.Errors.ApplicationErrors;
 using ErrorOr;
 using MediatR;
 
-namespace AuthOn.Application.Entities.Users.Commands.Create
+namespace AuthOn.Application.Users.Commands.Create
 {
     internal sealed class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, ErrorOr<Unit>>
     {
