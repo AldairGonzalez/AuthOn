@@ -55,6 +55,13 @@ namespace AuthOn.Domain.Entities.Users
             return new User(new UserId(Guid.NewGuid()), userName, email, hashedPassword);
         }
 
+        public void ActivateUser()
+        {
+            EmailConfirmed = true;
+            IsLocked = false;
+            RecordUpdateMoment = DateTime.UtcNow;
+        }
+
         #endregion
     }
 

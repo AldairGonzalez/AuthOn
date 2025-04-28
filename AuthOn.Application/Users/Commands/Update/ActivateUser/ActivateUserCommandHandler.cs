@@ -1,75 +1,72 @@
-﻿using AuthOn.Application.Common.Interfaces;
+﻿using AuthOn.Application.Services;
 using AuthOn.Application.Services.Interfaces;
 using AuthOn.Domain.Entities.Emails;
 using AuthOn.Domain.Entities.Users;
 using AuthOn.Domain.Primitives;
-using AuthOn.Domain.ValueObjects;
 using AuthOn.Shared.Constants;
 using AuthOn.Shared.Errors.ApplicationErrors;
 using ErrorOr;
 using MediatR;
 
-namespace AuthOn.Application.Users.Commands.Create
+namespace AuthOn.Application.Users.Commands.Update.ActivateUser
 {
-    internal sealed class CreateUserCommandHandler(
-            IUserRepository userRepository,
-            IUnitOfWork unitOfWork,
-            IPasswordHasher passwordHasher,
-            IEmailTemplateService emailTemplateService,
-            IEmailSenderService emailSenderService,
-            IEmailRepository emailRepository) : IRequestHandler<CreateUserCommand, ErrorOr<Unit>>
+    internal sealed class ActivateUserCommandHandler(
+        IUserRepository userRepository,
+        IEmailTemplateService emailTemplateService,
+        IEmailSenderService emailSenderService,
+        IEmailRepository emailRepository,
+        IUnitOfWork unitOfWork) : IRequestHandler<ActivateUserCommand, ErrorOr<Unit>>
     {
         private readonly IUserRepository _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        private readonly IPasswordHasher _passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
         private readonly IEmailTemplateService _emailTemplateService = emailTemplateService ?? throw new ArgumentNullException(nameof(emailTemplateService));
         private readonly IEmailSenderService _emailSenderService = emailSenderService ?? throw new ArgumentNullException(nameof(emailSenderService));
         private readonly IEmailRepository _emailRepository = emailRepository ?? throw new ArgumentNullException(nameof(emailRepository));
 
-        public async Task<ErrorOr<Unit>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<ErrorOr<Unit>> Handle(ActivateUserCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 #region Validations
 
-                if (UserName.Create(request.UserName) is not UserName userName)
+                var user = await _userRepository.GetByIdAsync(new UserId(request.UserId));
+                if (user == null)
                 {
-                    return UserErrors.User.UserNameWithBadFormat;
+                    return UserErrors.User.UserNotFound(request.UserId);
                 }
 
-                if (EmailAddress.Create(request.Email) is not EmailAddress email)
+                if (!user.IsLocked)
                 {
-                    return UserErrors.User.EmailWithBadFormat;
+                    return UserErrors.User.UserAlreadyActivated;
                 }
 
-                if (Password.Create(request.Password) is not Password password)
-                {
-                    return UserErrors.User.PasswordWithBadFormat;
-                }
+                var email = await _emailRepository.GetByIdAsync(request.EmailId);
 
-                if (await _userRepository.GetByEmailAsync(email) is not null)
+                if (email == null)
                 {
-                    return UserErrors.User.EmailAlreadyExists;
+                    return EmailErrors.Email.EmailNotFound(request.EmailId);
                 }
 
                 #endregion
 
                 #region Process
 
-                var user = User.Create(userName, email, _passwordHasher.Hash(password.Value));
+                user.ActivateUser();
 
-                await _userRepository.AddAsync(user);
+                await _userRepository.UpdateAsync(user);
+
+                email.MarkAsVisualized();
+
+                await _emailRepository.UpdateAsync(email);
 
                 var newEmail = Email.Create(
-                    destinationEmail: email,
-                    subject: EmailConstants.TitleActivationUser,
-                    message: "");
+                    destinationEmail: user.Email,
+                    subject: EmailConstants.TitleUserActivated,
+                    message: _emailTemplateService.GenerateInformativeEmailActivatedUser(user.UserName.Value));
 
                 await _emailRepository.AddAsync(newEmail);
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-                newEmail.UpdateMessage(_emailTemplateService.GenerateEmailWithActivateUserAction(user.Id.Value, newEmail.Id, user.UserName.Value));
 
                 var emailResult = await _emailSenderService.SendEmailAsync(newEmail, cancellationToken);
 
@@ -94,9 +91,8 @@ namespace AuthOn.Application.Users.Commands.Create
             }
             catch (Exception ex)
             {
-                return CommandHandlerErrors.User.UnexpectedErrorWhenCreatingUser(ex.Message);
+                return CommandHandlerErrors.User.UnexpectedErrorWhenActivatingUser(ex.Message);
             }
-
         }
     }
 }

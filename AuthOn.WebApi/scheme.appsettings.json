@@ -1,22 +1,26 @@
 ﻿{
   "ConnectionStrings": {
-    "SQLConnection": ""
+    "SQLConnection": "YOUR_CONNECTION_CHAIN"
   },
   "ApiInformation": {
-    "Url": "",
+    "Url": "YOUR_DOMAIN",
     "EndPoints": {
-      "ActivateAccount": "/api/User/ActivateAccount?token="
+      "ActivateUser": "/api/User/Activate?token="
     }
   },
   "GmailSettings": {
-    "UserEmail": "",
-    "Password": "",
+    "UserEmail": "YOUR_EMAIL_ADDRESS",
+    "Password": "GMAIL_API_PASSWORD",
     "Port": 587
   },
   "TokenSettings": {
     "ActivationToken": {
-      "Key": "",
+      "Key": "TOKEN_STRING",
       "ExpiresInHours": "48"
+    },
+    "MarkAsVisualizedToken": {
+      "Key": "TOKEN_STRING",
+      "ExpiresInHours": "720"
     }
   },
   "Logging": {

@@ -20,7 +20,7 @@ namespace AuthOn.Shared.Errors.InfrastructureErrors
         public static Error TokenExpired =>
             Error.Validation("TokenManager.token", "The token has expired.");
 
-        public static Error UnknownError =>
-            Error.Validation("Unknown Error", "An unknown error occurred while validating the token.");
+        public static Error UnknownError(string ex) =>
+            Error.Validation("Unknown Error", $"An unknown error occurred while validating the token.\nDetails: {ex}");
     }
 }

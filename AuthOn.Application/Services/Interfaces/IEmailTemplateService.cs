@@ -1,10 +1,8 @@
-﻿using AuthOn.Domain.Entities.Users;
-using AuthOn.Domain.ValueObjects;
-
-namespace AuthOn.Application.Services.Interfaces
+﻿namespace AuthOn.Application.Services.Interfaces
 {
     public interface IEmailTemplateService
     {
-        string GenerateActivationEmail(Guid userId, string userName);
+        string GenerateInformativeEmailActivatedUser(string userName);
+        string GenerateEmailWithActivateUserAction(Guid userId, long emailId, string userName);
     }
 }
