@@ -28,9 +28,10 @@ namespace AuthOn.Infrastructure.Persistence.Repositories
             return await _context.Users.FindAsync(id);
         }
 
-        public Task UpdateAsync(User user)
+        public async Task UpdateAsync(User user)
         {
-            throw new NotImplementedException();
+            _context.Users.Update(user);
+            await Task.CompletedTask;
         }
     }
 }

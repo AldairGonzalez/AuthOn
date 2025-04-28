@@ -1,7 +1,6 @@
 ﻿using AuthOn.Application.Configurations;
 using AuthOn.Application.Services.Interfaces;
 using AuthOn.Shared.Constants;
-using Microsoft.Extensions.Configuration;
 using System.Text;
 
 namespace AuthOn.Application.Services
@@ -72,19 +71,38 @@ namespace AuthOn.Application.Services
 
         #region Emails
 
-        public string GenerateActivationEmail(Guid userId, string userName)
+        #region Informative
+
+        public string GenerateInformativeEmailActivatedUser(string userName)
         {
-            var url = _apiEndPoints.ActivateAccountUrl + _tokenManager.GenerateActivationToken(userId).Value;
             return BaseMessage(
-                EmailConstants.TitleActivationEmail, 
+                EmailConstants.TitleUserActivated,
                 userName,
-                "Estamos emocionados de que estés a punto de unirte a AuthOn. Solo te falta un pequeño paso para activar tu cuenta.\n\n" +
+                "¡Tu cuenta ha sido activada con éxito! Ahora puedes acceder a todas las funciones de AuthOn."
+            );
+        }
+
+        #endregion
+
+        #region Whith Action Link
+
+        public string GenerateEmailWithActivateUserAction(Guid userId, long emailId, string userName)
+        {
+            var url = _apiEndPoints.ActivateUrl + _tokenManager.GenerateActivationToken(userId, emailId).Value;
+            return BaseMessage(
+                EmailConstants.TitleActivationUser,
+                userName,
+                "Estamos emocionados de que estés a punto de unirte a AuthOn. Sólo te falta un pequeño paso para activar tu cuenta.\n\n" +
                 "Para garantizar la seguridad de tu información y completar el proceso de registro, necesitamos que verifiques tu dirección de correo electrónico. " +
                 "Esto asegura que eres el propietario de esta cuenta y protege tu información personal.",
-                "¡Verificar Mi Email!", 
+                "¡Verificar Mi Email!",
                 url
             );
         }
+
+        #endregion
+
+
 
         #endregion
 

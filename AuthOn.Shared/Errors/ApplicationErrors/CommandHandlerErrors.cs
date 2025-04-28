@@ -6,7 +6,10 @@ namespace AuthOn.Shared.Errors.ApplicationErrors
     {
         public static class User
         {
-            public static Error UnexpectedErrorWhenCreatingAUser(string ex) =>
+            public static Error UnexpectedErrorWhenActivatingUser(string ex) =>
+                Error.Failure("ActivateUserCommandHandler", $"An unexpected error occurred while activating the user. Details: {ex}");
+
+            public static Error UnexpectedErrorWhenCreatingUser(string ex) =>
                 Error.Failure("CreateUserCommandHandler", $"An unexpected error occurred while creating the user. Details: {ex}");
         }
 

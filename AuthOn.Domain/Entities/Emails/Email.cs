@@ -54,6 +54,12 @@ namespace AuthOn.Domain.Entities.Emails
             RecordUpdateMoment = DateTime.UtcNow;
         }
 
+        public void UpdateMessage(string message)
+        {
+            Message = message;
+            RecordUpdateMoment = DateTime.UtcNow;
+        }
+
         public void UpdateStateFailed()
         {
             EmailStateId = EmailState.Failed.Id;

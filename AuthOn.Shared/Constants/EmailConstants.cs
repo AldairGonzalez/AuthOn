@@ -2,6 +2,7 @@
 {
     public static class EmailConstants
     {
-        public const string TitleActivationEmail = "¡Activa Tu Cuenta!";
+        public const string TitleActivationUser = "¡Activa Tu Usuario!";
+        public const string TitleUserActivated = "¡Tu Usuario Ha Sido Activado!";
     }
 }
