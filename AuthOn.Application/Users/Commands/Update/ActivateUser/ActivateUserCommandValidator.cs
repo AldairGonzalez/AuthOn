@@ -1,6 +1,18 @@
-﻿namespace AuthOn.Application.Users.Commands.Update.UpdateUserState
+﻿using FluentValidation;
+
+namespace AuthOn.Application.Users.Commands.Update.ActivateUser
 {
-    class ActivateUserCommandValidator
+    public class ActivateUserCommandValidator : AbstractValidator<ActivateUserCommand>
     {
+        public ActivateUserCommandValidator()
+        {
+            RuleFor(x => x.UserId)
+                .NotEmpty()
+                .WithName("User ID");
+
+            RuleFor(x => x.EmailId)
+                .NotEmpty()
+                .WithName("Email ID");
+        }
     }
 }

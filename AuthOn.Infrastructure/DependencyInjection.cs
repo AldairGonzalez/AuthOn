@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using AuthOn.Application.Services.Interfaces;
 using AuthOn.Application.Configurations;
 using AuthOn.Domain.Entities.Emails;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace AuthOn.Infrastructure
 {
@@ -28,6 +30,7 @@ namespace AuthOn.Infrastructure
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("SQLConnection")));
             services.Configure<GmailConfiguration>(configuration.GetSection("GmailSettings"));
             services.Configure<ApiInformationConfiguration>(configuration.GetSection("ApiInformation"));
+            services.AddSingleton(sp => sp.GetRequiredService<IOptions<ApiInformationConfiguration>>().Value);
             services.Configure<EndPointsConfiguration>(configuration.GetSection("EndPoints"));
             services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
             services.AddScoped<ITokenManager, TokenManager>();

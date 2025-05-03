@@ -27,7 +27,7 @@ namespace AuthOn.Infrastructure.Services
 
         public ErrorOr<string> GenerateActivationToken(Guid userId, long emailId) => GenerateUserToken(userId, ActivationTokenCode, emailId);
 
-        public ErrorOr<ActionTokenResponseModel> ValidateActivationToken(string token) => ValidateUserToken(token, ActivationTokenCode).Value;
+        public ErrorOr<ActionTokenResponseModel> ValidateActivationToken(string token) => ValidateUserToken(token, ActivationTokenCode);
 
         #endregion
 
@@ -37,7 +37,7 @@ namespace AuthOn.Infrastructure.Services
         {
             if (!_tokenConfigurations.TryGetValue(tokenType, out var config))
             {
-                return TokenManagerErrors.ConfigurationNotFound(tokenType);
+                return TokenManagerErrors.TokenManager.ConfigurationNotFound(tokenType);
             }
 
             var tokenGenerator = new JwtSecurityTokenHandler();
@@ -71,7 +71,7 @@ namespace AuthOn.Infrastructure.Services
             {
                 if (!_tokenConfigurations.TryGetValue(tokenType, out var config))
                 {
-                    return TokenManagerErrors.ConfigurationNotFound(tokenType);
+                    return TokenManagerErrors.TokenManager.ConfigurationNotFound(tokenType);
                 }
 
                 var tokenHandler = new JwtSecurityTokenHandler();
@@ -93,11 +93,11 @@ namespace AuthOn.Infrastructure.Services
                 ErrorOr<Guid?> userIdResult;
                 if (userIdClaim is null)
                 {
-                    userIdResult = TokenManagerErrors.ClaimNotFound("UserId");
+                    userIdResult = TokenManagerErrors.TokenManager.ClaimNotFound("UserId");
                 }
                 else if (!Guid.TryParse(userIdClaim.Value, out var userId))
                 {
-                    userIdResult = TokenManagerErrors.InvalidTokenFormat;
+                    userIdResult = TokenManagerErrors.TokenManager.TokenExpired;
                 }
                 else
                 {
@@ -110,11 +110,11 @@ namespace AuthOn.Infrastructure.Services
                     var emailIdClaim = claimsPrincipal.FindFirst("EmailId");
                     if (emailIdClaim is null)
                     {
-                        emailIdResult = TokenManagerErrors.ClaimNotFound("EmailId");
+                        emailIdResult = TokenManagerErrors.TokenManager.ClaimNotFound("EmailId");
                     }
                     else if (!long.TryParse(emailIdClaim.Value, out var emailId))
                     {
-                        emailIdResult = TokenManagerErrors.InvalidTokenFormat;
+                        throw new SecurityTokenExpiredException();
                     }
                     else
                     {
@@ -137,15 +137,15 @@ namespace AuthOn.Infrastructure.Services
             }
             catch (SecurityTokenExpiredException)
             {
-                return TokenManagerErrors.TokenExpired;
+                return ErrorOr<ActionTokenResponseModel>.From([TokenManagerErrors.TokenManager.TokenExpired]);
             }
             catch (SecurityTokenException)
             {
-                return TokenManagerErrors.InvalidToken;
+                return ErrorOr<ActionTokenResponseModel>.From([TokenManagerErrors.TokenManager.InvalidToken]);
             }
             catch (Exception ex)
             {
-                return TokenManagerErrors.UnknownError(ex.Message);
+                return ErrorOr<ActionTokenResponseModel>.From([TokenManagerErrors.TokenManager.UnknownError(ex.Message)]);
             }
         }
 

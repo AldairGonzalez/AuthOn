@@ -1,5 +1,4 @@
 ﻿using AuthOn.Application.Common.Behaviors;
-using AuthOn.Application.Configurations;
 using AuthOn.Application.Services;
 using AuthOn.Application.Services.Interfaces;
 using FluentValidation;
@@ -22,8 +21,6 @@ namespace AuthOn.Application
             services.AddScoped<IEmailTemplateService, EmailTemplateService>();
 
             services.AddScoped<IEmailSenderService, EmailSenderService>();
-
-            services.AddSingleton<ApiEndPointsConstants>();
 
             services.AddValidatorsFromAssemblyContaining<ApplicationAssemblyReference>();
 
