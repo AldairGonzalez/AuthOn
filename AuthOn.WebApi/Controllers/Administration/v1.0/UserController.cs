@@ -40,7 +40,7 @@ namespace AuthOn.WebApi.Controllers.Administration.v1._0
             var userId = tokenData.UserId.Value!.Value;
             var emailId = tokenData.EmailId.Value!.Value;
 
-            var activateUserCommand = new ActivateUserCommand(userId, emailId);
+            var activateUserCommand = new ActivateUserCommand(userId, emailId, token);
 
             var result = await _mediator.Send(activateUserCommand);
 

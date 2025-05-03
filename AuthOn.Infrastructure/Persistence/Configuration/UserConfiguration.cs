@@ -12,16 +12,16 @@ namespace AuthOn.Infrastructure.Persistence.Configuration
             builder.HasKey(u => u.Id);
 
             builder.Property(u => u.Id).HasConversion(
-                userId => userId.Value,
+                userId => userId!.Value,
                 value => new UserId(value));
 
             builder.Property(u => u.UserName).HasConversion(
-                userName => userName.Value,
+                userName => userName!.Value,
                 value => UserName.Create(value)!)
                 .HasMaxLength(20);
 
             builder.Property(u => u.Email).HasConversion(
-                email => email.Value,
+                email => email!.Value,
                 value => EmailAddress.Create(value)!)
                 .HasMaxLength(255);
 

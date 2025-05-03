@@ -5,5 +5,6 @@ namespace AuthOn.Application.Users.Commands.Update.ActivateUser
 {
     public record ActivateUserCommand(
     Guid UserId,
-    long EmailId) : IRequest<ErrorOr<Unit>>;
+    long EmailId,
+    string token) : IRequest<ErrorOr<Unit>>;
 }

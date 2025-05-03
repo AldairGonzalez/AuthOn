@@ -13,6 +13,10 @@ namespace AuthOn.Application.Users.Commands.Update.ActivateUser
             RuleFor(x => x.EmailId)
                 .NotEmpty()
                 .WithName("Email ID");
+
+            RuleFor(x => x.token)
+                .NotEmpty()
+                .WithName("Token");
         }
     }
 }

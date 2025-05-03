@@ -4,6 +4,8 @@ using AuthOn.Domain.Entities.Users;
 using AuthOn.Domain.Primitives;
 using AuthOn.Domain.Entities.Emails;
 using AuthOn.Domain.Entities.EmailStates;
+using AuthOn.Domain.Entities.TokenTypes;
+using AuthOn.Domain.Entities.UserTokens;
 
 namespace AuthOn.Infrastructure.Persistence
 {
@@ -12,6 +14,8 @@ namespace AuthOn.Infrastructure.Persistence
         public DbSet<Email> Emails { get; set; }
         public DbSet<EmailState> EmailStates { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<TokenType> TokenTypes { get; set; }
+        public DbSet<UserToken> UserTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

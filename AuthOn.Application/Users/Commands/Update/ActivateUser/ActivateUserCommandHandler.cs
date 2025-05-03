@@ -1,7 +1,7 @@
-﻿using AuthOn.Application.Services;
-using AuthOn.Application.Services.Interfaces;
+﻿using AuthOn.Application.Services.Interfaces;
 using AuthOn.Domain.Entities.Emails;
 using AuthOn.Domain.Entities.Users;
+using AuthOn.Domain.Entities.UserTokens;
 using AuthOn.Domain.Primitives;
 using AuthOn.Shared.Constants;
 using AuthOn.Shared.Errors.ApplicationErrors;
@@ -12,12 +12,14 @@ namespace AuthOn.Application.Users.Commands.Update.ActivateUser
 {
     internal sealed class ActivateUserCommandHandler(
         IUserRepository userRepository,
+        IUserTokenRepository userTokenRepository,
         IEmailTemplateService emailTemplateService,
         IEmailSenderService emailSenderService,
         IEmailRepository emailRepository,
         IUnitOfWork unitOfWork) : IRequestHandler<ActivateUserCommand, ErrorOr<Unit>>
     {
         private readonly IUserRepository _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+        private readonly IUserTokenRepository _userTokenRepository = userTokenRepository ?? throw new ArgumentNullException(nameof(userTokenRepository));
         private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         private readonly IEmailTemplateService _emailTemplateService = emailTemplateService ?? throw new ArgumentNullException(nameof(emailTemplateService));
         private readonly IEmailSenderService _emailSenderService = emailSenderService ?? throw new ArgumentNullException(nameof(emailSenderService));
@@ -29,22 +31,33 @@ namespace AuthOn.Application.Users.Commands.Update.ActivateUser
             {
                 #region Validations
 
-                var user = await _userRepository.GetByIdAsync(new UserId(request.UserId));
+                var user = await _userRepository.GetByIdAsync(new UserId(request.UserId), cancellationToken);
+
                 if (user == null)
                 {
                     return UserErrors.User.UserNotFound(request.UserId);
                 }
 
+                var token = await _userTokenRepository.GetAsync(user.Id!, request.token, cancellationToken);
+
+                if (token == null)
+                {
+                    return UserTokenErrors.UserToken.TokenNotFound(request.token);
+                }
+
+                if (token.IsExpired)
+                {
+                    return UserTokenErrors.UserToken.TokenExpired;
+                }
+
+                if (token.IsUsed)
+                {
+                    return UserTokenErrors.UserToken.TokenUsed;
+                }
+
                 if (!user.IsLocked)
                 {
                     return UserErrors.User.UserAlreadyActivated;
-                }
-
-                var email = await _emailRepository.GetByIdAsync(request.EmailId);
-
-                if (email == null)
-                {
-                    return EmailErrors.Email.EmailNotFound(request.EmailId);
                 }
 
                 #endregion
@@ -53,18 +66,27 @@ namespace AuthOn.Application.Users.Commands.Update.ActivateUser
 
                 user.ActivateUser();
 
-                await _userRepository.UpdateAsync(user);
+                await _userRepository.Update(user);
 
-                email.MarkAsVisualized();
+                var email = await _emailRepository.GetByIdAsync(request.EmailId, cancellationToken);
 
-                await _emailRepository.UpdateAsync(email);
+                if (email != null)
+                {
+                    email.MarkAsVisualized();
+
+                    await _emailRepository.Update(email);
+                }
+
+                token.MarkAsUsed();
+
+                await _userTokenRepository.Update(token);
 
                 var newEmail = Email.Create(
-                    destinationEmail: user.Email,
+                    destinationEmail: user.Email!,
                     subject: EmailConstants.TitleUserActivated,
-                    message: _emailTemplateService.GenerateInformativeEmailActivatedUser(user.UserName.Value));
+                    message: _emailTemplateService.GenerateInformativeEmailActivatedUser(user.UserName!.Value));
 
-                await _emailRepository.AddAsync(newEmail);
+                await _emailRepository.AddAsync(newEmail, cancellationToken);
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -74,14 +96,14 @@ namespace AuthOn.Application.Users.Commands.Update.ActivateUser
                 {
                     newEmail.UpdateStateFailed();
 
-                    await _emailRepository.UpdateAsync(newEmail);
+                    await _emailRepository.Update(newEmail);
 
                     await _unitOfWork.SaveChangesAsync(cancellationToken);
 
                     return emailResult.Errors;
                 }
 
-                await _emailRepository.UpdateAsync(emailResult.Value);
+                await _emailRepository.Update(emailResult.Value);
 
                 await _unitOfWork.SaveChangesAsync(cancellationToken);
 

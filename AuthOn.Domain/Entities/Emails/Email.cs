@@ -8,9 +8,9 @@ namespace AuthOn.Domain.Entities.Emails
         #region Properties
 
         public long Id { get; private set; }
-        public EmailAddress DestinationEmail { get; private set; }
-        public string Subject { get; private set; }
-        public string Message { get; private set; }
+        public EmailAddress? DestinationEmail { get; private set; }
+        public string Subject { get; private set; } = string.Empty;
+        public string Message { get; private set; } = string.Empty;
         public byte EmailStateId { get; private set; }
         public bool Visualized { get; private set; }
         public DateTime RecordCreationMoment { get; private set; }
@@ -26,6 +26,8 @@ namespace AuthOn.Domain.Entities.Emails
 
         #region Constructors
 
+        public Email() { }
+
         private Email(EmailAddress destinationEmail, string subject, string message)
         {
             DestinationEmail = destinationEmail;
@@ -36,8 +38,6 @@ namespace AuthOn.Domain.Entities.Emails
             RecordCreationMoment = DateTime.UtcNow;
             RecordUpdateMoment = DateTime.UtcNow;
         }
-
-        public Email() { }
 
         #endregion
 

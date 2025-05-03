@@ -1,4 +1,4 @@
-﻿using AuthOn.Domain.Entities.Emails;
+﻿using AuthOn.Domain.Entities.UserTokens;
 using AuthOn.Domain.ValueObjects;
 
 namespace AuthOn.Domain.Entities.Users
@@ -7,9 +7,9 @@ namespace AuthOn.Domain.Entities.Users
     {
         #region Properties
 
-        public UserId Id { get; private set; }
-        public UserName UserName { get; private set; }
-        public EmailAddress Email { get; private set; }
+        public UserId? Id { get; private set; }
+        public UserName? UserName { get; private set; }
+        public EmailAddress? Email { get; private set; }
         public string HashedPassword { get; private set; } = string.Empty;
         public bool EmailConfirmed { get; private set; }
         public bool IsLocked { get; private set; }
@@ -18,15 +18,17 @@ namespace AuthOn.Domain.Entities.Users
         public DateTime RecordCreationMoment { get; private set; }
         public DateTime RecordUpdateMoment { get; private set; }
 
+        #endregion
+
         #region Navigation Properties
 
-
-
-        #endregion
+        public List<UserToken> UserTokens { get; private set; } = [];
 
         #endregion
 
         #region Constructors
+
+        public User() { }
 
         private User(UserId id, UserName userName, EmailAddress email, string hashedPassword)
         {
@@ -39,11 +41,6 @@ namespace AuthOn.Domain.Entities.Users
             AuthenticationAttempts = 0;
             RecordCreationMoment = DateTime.UtcNow;
             RecordUpdateMoment = DateTime.UtcNow;
-        }
-
-        public User()
-        {
-
         }
 
         #endregion

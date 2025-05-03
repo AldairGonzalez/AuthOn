@@ -5,9 +5,8 @@ using System.Text;
 
 namespace AuthOn.Application.Services
 {
-    public class EmailTemplateService(ITokenManager tokenManager, ApiInformationConfiguration apiInformationConfiguration) : IEmailTemplateService
+    public class EmailTemplateService(ApiInformationConfiguration apiInformationConfiguration) : IEmailTemplateService
     {
-        private readonly ITokenManager _tokenManager = tokenManager;
         private readonly ApiInformationConfiguration _apiInformationConfiguration = apiInformationConfiguration;
 
         #region Methods
@@ -73,14 +72,14 @@ namespace AuthOn.Application.Services
 
         #region Emails Whith Action Link
 
-        public string GenerateEmailWithActivateUserAction(Guid userId, long emailId, string userName)
+        public string GenerateEmailWithActivateUserAction(string userName, string token)
         {
             return BaseMessage(
                 title: EmailConstants.TitleActivationUser,
                 userName,
                 detail: EmailConstants.MessageActivateYourUser,
                 buttonText: EmailConstants.ButtonActivateUser,
-                url: _apiInformationConfiguration.GetActivateUrl() + _tokenManager.GenerateActivationToken(userId, emailId).Value
+                url: _apiInformationConfiguration.GetActivateUrl() + token
             );
         }
 

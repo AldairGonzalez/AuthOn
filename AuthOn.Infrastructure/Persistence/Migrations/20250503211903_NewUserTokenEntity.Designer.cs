@@ -4,6 +4,7 @@ using AuthOn.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthOn.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250503211903_NewUserTokenEntity")]
+    partial class NewUserTokenEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,8 +101,8 @@ namespace AuthOn.Infrastructure.Persistence.Migrations
                     b.Property<byte>("Id")
                         .HasColumnType("tinyint");
 
-                    b.Property<int>("ExpirationTimeInHours")
-                        .HasColumnType("int");
+                    b.Property<TimeSpan>("ExpirationTime")
+                        .HasColumnType("time");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -114,7 +117,7 @@ namespace AuthOn.Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = (byte)1,
-                            ExpirationTimeInHours = 48,
+                            ExpirationTime = new TimeSpan(2, 0, 0, 0, 0),
                             Name = "ACTIVATION_TOKEN"
                         });
                 });

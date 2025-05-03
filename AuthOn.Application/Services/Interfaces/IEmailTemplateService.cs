@@ -3,6 +3,6 @@
     public interface IEmailTemplateService
     {
         string GenerateInformativeEmailActivatedUser(string userName);
-        string GenerateEmailWithActivateUserAction(Guid userId, long emailId, string userName);
+        string GenerateEmailWithActivateUserAction(string userName, string token);
     }
 }
