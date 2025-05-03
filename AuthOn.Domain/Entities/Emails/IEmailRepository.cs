@@ -2,8 +2,8 @@
 {
     public interface IEmailRepository
     {
-        Task AddAsync(Email email);
-        Task<Email?> GetByIdAsync(long emailId);
-        Task UpdateAsync(Email email);
+        Task AddAsync(Email email, CancellationToken cancellationToken);
+        Task<Email?> GetByIdAsync(long emailId, CancellationToken cancellationToken);
+        Task Update(Email email);
     }
 }

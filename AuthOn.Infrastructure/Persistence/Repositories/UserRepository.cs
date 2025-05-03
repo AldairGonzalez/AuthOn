@@ -8,27 +8,22 @@ namespace AuthOn.Infrastructure.Persistence.Repositories
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task AddAsync(User user)
+        public async Task AddAsync(User user, CancellationToken cancellationToken)
         {
-            await _context.Users.AddAsync(user);
+            await _context.Users.AddAsync(user, cancellationToken);
         }
 
-        public Task DeleteAsync(User user)
+        public async Task<User?> GetByEmailAsync(EmailAddress email, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await _context.Users.FirstOrDefaultAsync(x => x.Email == email, cancellationToken);
         }
 
-        public async Task<User?> GetByEmailAsync(EmailAddress email)
+        public async Task<User?> GetByIdAsync(UserId id, CancellationToken cancellationToken)
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Email.Equals(email));
+            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
 
-        public async Task<User?> GetByIdAsync(UserId id)
-        {
-            return await _context.Users.FindAsync(id);
-        }
-
-        public async Task UpdateAsync(User user)
+        public async Task Update(User user)
         {
             _context.Users.Update(user);
             await Task.CompletedTask;

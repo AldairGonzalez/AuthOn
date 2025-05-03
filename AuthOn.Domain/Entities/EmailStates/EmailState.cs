@@ -17,23 +17,23 @@ namespace AuthOn.Domain.Entities.EmailStates
 
         #endregion
 
+        #region Static Properties
+
+        public static EmailState Pending => new(1, "PENDING");
+        public static EmailState Sent => new(2, "SENT");
+        public static EmailState Failed => new(3, "FAILED");
+
+        #endregion
+
         #region Constructors
+
+        public EmailState() { }
 
         public EmailState(byte id, string name)
         {
             Id = id;
             Name = name ?? throw new ArgumentNullException(nameof(name));
         }
-
-        public EmailState() { }
-
-        #endregion
-
-        #region Static Properties
-
-        public static EmailState Pending => new(1, "PENDING");
-        public static EmailState Sent => new(2, "SENT");
-        public static EmailState Failed => new(3, "FAILED");
 
         #endregion
     }

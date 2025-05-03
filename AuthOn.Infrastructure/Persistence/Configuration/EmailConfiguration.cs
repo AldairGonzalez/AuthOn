@@ -12,7 +12,7 @@ namespace AuthOn.Infrastructure.Persistence.Configuration
             builder.HasKey(u => u.Id);
 
             builder.Property(u => u.DestinationEmail).HasConversion(
-                email => email.Value,
+                email => email!.Value,
                 value => EmailAddress.Create(value)!)
                 .HasMaxLength(255);
 
