@@ -7,14 +7,9 @@ using ErrorOr;
 
 namespace AuthOn.WebApi.Common.Errors
 {
-    public class AuthOnProblemDetailsFactory : ProblemDetailsFactory
+    public class AuthOnProblemDetailsFactory(ApiBehaviorOptions options) : ProblemDetailsFactory
     {
-        private readonly ApiBehaviorOptions _options;
-
-        public AuthOnProblemDetailsFactory(ApiBehaviorOptions options)
-        {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
-        }
+        private readonly ApiBehaviorOptions _options = options ?? throw new ArgumentNullException(nameof(options));
 
         public override ProblemDetails CreateProblemDetails(HttpContext httpContext, int? statusCode = null, string? title = null, string? type = null, string? detail = null, string? instance = null)
         {
