@@ -8,7 +8,7 @@ namespace AuthOn.WebApi.Controllers
     [ApiController]
     public class ApiController : ControllerBase
     {
-        protected IActionResult Problem(List<Error> errors)
+        protected ObjectResult Problem(List<Error> errors)
         {
             if (errors.Count is 0)
             {
@@ -25,7 +25,7 @@ namespace AuthOn.WebApi.Controllers
             return Problem(errors[0]);
         }
 
-        private IActionResult Problem(Error error)
+        private ObjectResult Problem(Error error)
         {
             var statusCode = error.Type switch
             {
@@ -38,7 +38,7 @@ namespace AuthOn.WebApi.Controllers
             return Problem(statusCode: statusCode, title: error.Description);
         }
 
-        private IActionResult ValidationProblem(List<Error> erros)
+        private ObjectResult ValidationProblem(List<Error> erros)
         {
             var modelStateDictionary = new ModelStateDictionary();
 
@@ -47,7 +47,7 @@ namespace AuthOn.WebApi.Controllers
                 modelStateDictionary.AddModelError(error.Code, error.Description);
             }
 
-            return ValidationProblem(modelStateDictionary);
+            return (ObjectResult)ValidationProblem(modelStateDictionary);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace AuthOn.Application.Users.Commands.Login
+namespace AuthOn.Application.Users.Commands.Update.Login
 {
     public class LoginUserCommandValidator : AbstractValidator<LoginUserCommand>
     {

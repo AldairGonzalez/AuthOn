@@ -3,7 +3,10 @@ using AuthOn.Application.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using AuthOn.Application.Users.Commands.Update.ActivateUser;
-using AuthOn.Application.Users.Commands.Login;
+using Microsoft.AspNetCore.Authorization;
+using AuthOn.Application.Users.Commands.Update.Login;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using AuthOn.Application.Users.Commands.Update.RefreshToken;
 
 namespace AuthOn.WebApi.Controllers.Administration.v1._0
 {
@@ -15,7 +18,11 @@ namespace AuthOn.WebApi.Controllers.Administration.v1._0
 
         #region Methods
 
-        [HttpPatch("Activate")]
+        [HttpGet("Activate")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Activate([FromQuery] string token)
         {
             var tokenValidationResult = _tokenManager.ValidateActivationToken(token);
@@ -45,30 +52,54 @@ namespace AuthOn.WebApi.Controllers.Administration.v1._0
 
             var result = await _mediator.Send(activateUserCommand);
 
-            return result.Match(
+            return result.Match<IActionResult>(
                 _ => Ok(),
                 errors => Problem(errors)
             );
         }
 
         [HttpPost("Create")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Create([FromBody] CreateUserCommand command)
         {
             var createUserResult = await _mediator.Send(command);
 
-            return createUserResult.Match(
-                _ => Ok(),
+            return createUserResult.Match<IActionResult>(
+                _ => StatusCode(StatusCodes.Status201Created),
                 errors => Problem(errors)
             );
         }
 
         [HttpPost("Login")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromBody] LoginUserCommand command)
         {
             var loginResult = await _mediator.Send(command);
 
             return loginResult.Match(
                 _ => Ok(loginResult.Value),
+                errors => Problem(errors)
+            );
+        }
+
+        [HttpPost("RefreshToken")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenUserCommand command)
+        {
+            var refreshTokenResult = await _mediator.Send(command);
+
+            return refreshTokenResult.Match(
+                _ => Ok(refreshTokenResult.Value),
                 errors => Problem(errors)
             );
         }

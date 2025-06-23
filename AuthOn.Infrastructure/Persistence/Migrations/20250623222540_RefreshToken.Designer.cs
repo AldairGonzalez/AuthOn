@@ -4,6 +4,7 @@ using AuthOn.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthOn.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250623222540_RefreshToken")]
+    partial class RefreshToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,8 +101,8 @@ namespace AuthOn.Infrastructure.Persistence.Migrations
                     b.Property<byte>("Id")
                         .HasColumnType("tinyint");
 
-                    b.Property<double>("ExpirationTimeInHours")
-                        .HasColumnType("float");
+                    b.Property<int>("ExpirationTimeInHours")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -114,19 +117,19 @@ namespace AuthOn.Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = (byte)1,
-                            ExpirationTimeInHours = 0.25,
+                            ExpirationTimeInHours = 15,
                             Name = "ACCESS_TOKEN"
                         },
                         new
                         {
                             Id = (byte)2,
-                            ExpirationTimeInHours = 48.0,
+                            ExpirationTimeInHours = 48,
                             Name = "ACTIVATION_TOKEN"
                         },
                         new
                         {
                             Id = (byte)3,
-                            ExpirationTimeInHours = 720.0,
+                            ExpirationTimeInHours = 720,
                             Name = "REFRESH_TOKEN"
                         });
                 });
