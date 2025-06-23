@@ -3,6 +3,7 @@ using AuthOn.Application.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using AuthOn.Application.Users.Commands.Update.ActivateUser;
+using AuthOn.Application.Users.Commands.Login;
 
 namespace AuthOn.WebApi.Controllers.Administration.v1._0
 {
@@ -14,7 +15,7 @@ namespace AuthOn.WebApi.Controllers.Administration.v1._0
 
         #region Methods
 
-        [HttpGet("Activate")]
+        [HttpPatch("Activate")]
         public async Task<IActionResult> Activate([FromQuery] string token)
         {
             var tokenValidationResult = _tokenManager.ValidateActivationToken(token);
@@ -57,6 +58,17 @@ namespace AuthOn.WebApi.Controllers.Administration.v1._0
 
             return createUserResult.Match(
                 _ => Ok(),
+                errors => Problem(errors)
+            );
+        }
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromBody] LoginUserCommand command)
+        {
+            var loginResult = await _mediator.Send(command);
+
+            return loginResult.Match(
+                _ => Ok(loginResult.Value),
                 errors => Problem(errors)
             );
         }

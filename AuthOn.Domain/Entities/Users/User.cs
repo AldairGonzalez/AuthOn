@@ -59,6 +59,22 @@ namespace AuthOn.Domain.Entities.Users
             RecordUpdateMoment = DateTime.UtcNow;
         }
 
+        public void IncreaseAuthenticationAttempts()
+        {
+            AuthenticationAttempts++;
+            RecordUpdateMoment = DateTime.UtcNow;
+            if (AuthenticationAttempts >= 5)
+            {
+                IsLocked = true;
+            }
+        }
+
+        public void ResetAuthenticationAttempts()
+        {
+            AuthenticationAttempts = 0;
+            RecordUpdateMoment = DateTime.UtcNow;
+        }
+
         #endregion
     }
 
