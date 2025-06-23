@@ -13,14 +13,14 @@
     "Password": "GMAIL_API_PASSWORD",
     "Port": 587
   },
-  "TokenSettings": {
+  "TokenConfiguration": {
+    "AccessToken": {
+      "Key": "TOKEN_STRING",
+      "ExpiresInHours": 0.25
+    },
     "ActivationToken": {
       "Key": "TOKEN_STRING",
-      "ExpiresInHours": "48"
-    },
-    "MarkAsVisualizedToken": {
-      "Key": "TOKEN_STRING",
-      "ExpiresInHours": "720"
+      "ExpiresInHours": 48
     }
   },
   "Logging": {

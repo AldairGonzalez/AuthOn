@@ -1,7 +1,6 @@
 ﻿using AuthOn.Domain.Entities.Users;
 using AuthOn.Domain.Entities.UserTokens;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AuthOn.Infrastructure.Persistence.Configuration

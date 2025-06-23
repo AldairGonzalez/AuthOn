@@ -12,7 +12,6 @@ using AuthOn.Application.Services.Interfaces;
 using AuthOn.Application.Configurations;
 using AuthOn.Domain.Entities.Emails;
 using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using AuthOn.Domain.Entities.UserTokens;
 
 namespace AuthOn.Infrastructure
@@ -40,7 +39,7 @@ namespace AuthOn.Infrastructure
             services.AddScoped<IUserTokenRepository, UserTokenRepository>();
             services.AddScoped<IEmailRepository, EmailRepository>();
             services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
-            services.Configure<Dictionary<string, TokenConfiguration>>(configuration.GetSection("TokenSettings"));
+            services.Configure<Dictionary<string, TokenConfiguration>>(configuration.GetSection("TokenConfiguration"));
 
             return services;
         }

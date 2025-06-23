@@ -17,6 +17,7 @@ namespace AuthOn.Infrastructure.Services
 
         #region Properties
 
+        private const string AccessTokenCode = "AccessToken";
         private const string ActivationTokenCode = "ActivationToken";
 
         #endregion
@@ -24,6 +25,8 @@ namespace AuthOn.Infrastructure.Services
         #region Methods
 
         #region Public
+
+        public ErrorOr<string> GenerateAccessToken(Guid userId) => GenerateUserToken(userId, AccessTokenCode);
 
         public ErrorOr<string> GenerateActivationToken(Guid userId, long emailId) => GenerateUserToken(userId, ActivationTokenCode, emailId);
 
@@ -33,7 +36,7 @@ namespace AuthOn.Infrastructure.Services
 
         #region Private
 
-        private ErrorOr<string> GenerateUserToken(Guid userId, string tokenType, long? emailId)
+        private ErrorOr<string> GenerateUserToken(Guid userId, string tokenType, long? emailId = null)
         {
             if (!_tokenConfigurations.TryGetValue(tokenType, out var config))
             {
