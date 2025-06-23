@@ -18,7 +18,9 @@ namespace AuthOn.Infrastructure.Persistence.Configuration
                 .IsRequired();
 
             builder.HasData(
-                TokenType.ActivationToken
+                TokenType.AccessToken,
+                TokenType.ActivationToken,
+                TokenType.RefreshToken
             );
         }
     }

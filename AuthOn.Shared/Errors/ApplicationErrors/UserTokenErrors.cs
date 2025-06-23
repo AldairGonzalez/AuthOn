@@ -12,6 +12,9 @@ namespace AuthOn.Shared.Errors.ApplicationErrors
             public static Error TokenExpired =>
                 Error.Validation("UserToken.token", "The token has expired.");
 
+            public static Error InvalidatedToken =>
+                Error.Validation("UserToken.token", "This token has been invalidated.");
+
             public static Error TokenUsed =>
                 Error.Validation("UserToken.token", "The token has been invalidated because it was used.");
         }

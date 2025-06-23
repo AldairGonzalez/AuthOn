@@ -21,6 +21,10 @@
     "ActivationToken": {
       "Key": "TOKEN_STRING",
       "ExpiresInHours": 48
+    },
+    "RefreshToken": {
+      "Key": "TOKEN_STRING",
+      "ExpiresInHours": 720
     }
   },
   "Logging": {

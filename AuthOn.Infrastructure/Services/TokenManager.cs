@@ -1,6 +1,7 @@
 ﻿using AuthOn.Application.Common.Models;
 using AuthOn.Application.Configurations;
 using AuthOn.Application.Services.Interfaces;
+using AuthOn.Domain.Entities.TokenTypes;
 using AuthOn.Shared.Errors.InfrastructureErrors;
 using ErrorOr;
 using Microsoft.Extensions.Options;
@@ -17,8 +18,27 @@ namespace AuthOn.Infrastructure.Services
 
         #region Properties
 
+        #region Privates
+
         private const string AccessTokenCode = "AccessToken";
         private const string ActivationTokenCode = "ActivationToken";
+        private const string RefreshTokenCode = "RefreshToken";
+
+        #endregion
+
+        #region Publics
+
+        public ErrorOr<double> RefreshTokenExpireInHours
+        {
+            get
+            {
+                if (_tokenConfigurations.TryGetValue(RefreshTokenCode, out var config))
+                    return config.ExpiresInHours;
+                return TokenManagerErrors.TokenManager.ConfigurationNotFound(RefreshTokenCode);
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -30,7 +50,11 @@ namespace AuthOn.Infrastructure.Services
 
         public ErrorOr<string> GenerateActivationToken(Guid userId, long emailId) => GenerateUserToken(userId, ActivationTokenCode, emailId);
 
+        public ErrorOr<string> GenerateRefreshToken(Guid userId) => GenerateUserToken(userId, RefreshTokenCode);
+
         public ErrorOr<ActionTokenResponseModel> ValidateActivationToken(string token) => ValidateUserToken(token, ActivationTokenCode);
+
+        public ErrorOr<ActionTokenResponseModel> ValidateRefreshToken(string refreshToken) => ValidateUserToken(refreshToken, RefreshTokenCode);
 
         #endregion
 
