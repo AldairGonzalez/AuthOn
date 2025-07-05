@@ -1,12 +1,11 @@
 ﻿using AuthOn.Application.Users.Commands.Create;
+using AuthOn.Application.Users.Commands.Update.ActivateUser;
+using AuthOn.Application.Users.Commands.Update.Login;
+using AuthOn.Application.Users.Commands.Update.RefreshToken;
 using AuthOn.Application.Services.Interfaces;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using AuthOn.Application.Users.Commands.Update.ActivateUser;
 using Microsoft.AspNetCore.Authorization;
-using AuthOn.Application.Users.Commands.Update.Login;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using AuthOn.Application.Users.Commands.Update.RefreshToken;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AuthOn.WebApi.Controllers.Administration.v1._0
 {

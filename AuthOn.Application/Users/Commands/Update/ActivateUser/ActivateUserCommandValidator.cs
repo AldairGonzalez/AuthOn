@@ -14,7 +14,7 @@ namespace AuthOn.Application.Users.Commands.Update.ActivateUser
                 .NotEmpty()
                 .WithName("Email ID");
 
-            RuleFor(x => x.token)
+            RuleFor(x => x.Token)
                 .NotEmpty()
                 .WithName("Token");
         }

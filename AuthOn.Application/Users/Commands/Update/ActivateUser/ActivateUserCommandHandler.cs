@@ -38,11 +38,11 @@ namespace AuthOn.Application.Users.Commands.Update.ActivateUser
                     return UserErrors.User.UserNotFound(request.UserId);
                 }
 
-                var token = await _userTokenRepository.GetAsync(user.Id!, request.token, cancellationToken);
+                var token = await _userTokenRepository.GetAsync(user.Id!, request.Token, cancellationToken);
 
                 if (token == null)
                 {
-                    return UserTokenErrors.UserToken.TokenNotFound(request.token);
+                    return UserTokenErrors.UserToken.TokenNotFound(request.Token);
                 }
 
                 if (token.IsExpired)

@@ -4,27 +4,22 @@ using MediatR;
 
 namespace AuthOn.Application.Common.Behaviors
 {
-    public class ValidationBehaviors<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse> where TResponse : IErrorOr
+    public class ValidationBehaviors<TRequest, TResponse>(IValidator<TRequest>? validator = null) : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse> where TResponse : IErrorOr
     {
-        private readonly IValidator<TRequest>? _validator;
-
-        public ValidationBehaviors(IValidator<TRequest>? validator = null)
-        {
-            _validator = validator;
-        }
+        private readonly IValidator<TRequest>? _validator = validator;
 
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             if (_validator is null)
             {
-                return await next();
+                return await next(cancellationToken);
             }
 
             var validatorResult = await _validator.ValidateAsync(request, cancellationToken);
 
             if (validatorResult.IsValid)
             {
-                return await next();
+                return await next(cancellationToken);
             }
 
             var errors = validatorResult.Errors

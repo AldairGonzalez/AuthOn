@@ -1,9 +1,9 @@
 ﻿using AuthOn.Application.Configurations;
 using AuthOn.Application.Services.Interfaces;
 using AuthOn.Domain.Entities.Emails;
+using AuthOn.Shared.Errors.ApplicationErrors;
 using ErrorOr;
 using Microsoft.Extensions.Options;
-using AuthOn.Shared.Errors.ApplicationErrors;
 using System.Net.Mail;
 
 namespace AuthOn.Application.Services
@@ -32,7 +32,7 @@ namespace AuthOn.Application.Services
                 var message = new MailMessage
                 {
                     From = new MailAddress(_settings.UserEmail!),
-                    To = { email.DestinationEmail.Value },
+                    To = { email.DestinationEmail!.Value },
                     Subject = email.Subject,
                     Body = email.Message,
                     IsBodyHtml = true

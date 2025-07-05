@@ -28,17 +28,29 @@ namespace AuthOn.Infrastructure
         private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("SQLConnection")));
-            services.Configure<GmailConfiguration>(configuration.GetSection("GmailSettings"));
-            services.Configure<ApiInformationConfiguration>(configuration.GetSection("ApiInformation"));
-            services.AddSingleton(sp => sp.GetRequiredService<IOptions<ApiInformationConfiguration>>().Value);
-            services.Configure<EndPointsConfiguration>(configuration.GetSection("EndPoints"));
+
             services.AddScoped<IApplicationDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
-            services.AddScoped<ITokenManager, TokenManager>();
-            services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IUserTokenRepository, UserTokenRepository>();
+
             services.AddScoped<IEmailRepository, EmailRepository>();
+
             services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
+
+            services.AddScoped<ITokenManager, TokenManager>();
+
+            services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
+
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<IUserTokenRepository, UserTokenRepository>();
+
+            services.AddSingleton(sp => sp.GetRequiredService<IOptions<ApiInformationConfiguration>>().Value);
+
+            services.Configure<ApiInformationConfiguration>(configuration.GetSection("ApiInformation"));
+
+            services.Configure<EndPointsConfiguration>(configuration.GetSection("EndPoints"));
+
+            services.Configure<GmailConfiguration>(configuration.GetSection("GmailSettings"));
+
             services.Configure<Dictionary<string, TokenConfiguration>>(configuration.GetSection("TokenConfiguration"));
 
             return services;
