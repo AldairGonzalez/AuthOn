@@ -1,7 +1,6 @@
 ﻿using AuthOn.Application.Common.Models;
 using AuthOn.Application.Configurations;
 using AuthOn.Application.Services.Interfaces;
-using AuthOn.Domain.Entities.TokenTypes;
 using AuthOn.Shared.Errors.InfrastructureErrors;
 using ErrorOr;
 using Microsoft.Extensions.Options;

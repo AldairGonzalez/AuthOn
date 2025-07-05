@@ -13,18 +13,14 @@ namespace AuthOn.WebApi
             services.AddControllers();
             services.AddOpenApi();
 
-            // Asegúrate de que ApiBehaviorOptions esté configurado
             services.Configure<ApiBehaviorOptions>(options => { });
 
-            // Registrar tu propio ProblemDetailsFactory
             services.AddSingleton<ProblemDetailsFactory>(sp =>
             {
-                // Desenvolver IOptions<ApiBehaviorOptions> a ApiBehaviorOptions
                 var options = sp.GetRequiredService<IOptions<ApiBehaviorOptions>>().Value;
                 return new AuthOnProblemDetailsFactory(options);
             });
 
-            // Registrar el middleware para el manejo global de excepciones
             services.AddTransient<GlobalExceptionHandlingMiddleware>();
 
             return services;

@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
-using System.Net;
-using AuthOn.WebApi.Common.Http;
+﻿using AuthOn.WebApi.Common.Http;
 using ErrorOr;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using System.Net;
 
 namespace AuthOn.WebApi.Middlewares
 {
